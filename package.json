@@ -1,0 +1,13 @@
+{
+    "name": "passport-pocket",
+    "version": "0.0.1",
+    "description": "Pocket authentication strategy for Passport.",
+    "dependencies": {
+        "passport": "*",
+        "request" : "*",
+        "passport-oauth": "0.1.x",
+        "express" : "*",
+        "consolidate" : "*",
+        "swig" : "*"
+    }
+}

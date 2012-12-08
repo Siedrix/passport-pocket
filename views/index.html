@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block title %}Get Pocket Passport Strategy{% endblock %}
+
+{% block content %}
+<h1>Get Pocket Passport Strategy</h1>
+{% if !user %}
+	<p><a href="/auth/pocket">Login in</a></p>
+{% else %}
+	<p>Welcome {{ user.username }}</p>
+	{% for item in items.list %}
+		{% if loop.first %}<ul>{% endif %}
+		<li>{{ loop.index }} - 
+		{% if !item.given_title %}
+			{{ item.given_url }}
+		{% else %}	
+			{{ item.given_title }}
+		{% endif %}
+		</li>
+		{% if loop.last %}</ul>{% endif %}
+	{% endfor %}
+
+{% endif %}
+{% endblock %}
