@@ -1,6 +1,6 @@
 {
     "name": "passport-pocket",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Pocket authentication strategy for Passport.",
     "main": "./pocket-strategy.js",
     "repository":   {
