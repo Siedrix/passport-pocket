@@ -4,10 +4,14 @@ var express = require('express'),
 
 var	passport = require('passport'),
 	util = require('util'),
-	PocketStrategy = require('./pocket-strategy');
+	PocketStrategy = require('passport-pocket');
 
 // Pocket App token
 POCKET_CONSUMER_KEY = "Pocket consumer key";
+
+if(POCKET_CONSUMER_KEY === "Pocket consumer key"){
+	console.log('WARNING!!! Need a pocket costumer key');
+}
 
 // Passport Set serializers
 passport.serializeUser(function(user, done) {

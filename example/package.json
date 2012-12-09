@@ -1,6 +1,6 @@
 {
     "name": "passport-pocket",
-    "version": "0.0.3",
+    "version": "0.0.2",
     "description": "Pocket authentication strategy for Passport.",
     "main": "./pocket-strategy.js",
     "repository":   {
@@ -9,7 +9,11 @@
     },
     "dependencies": {
         "passport": "0.1.15",
-        "request" : "2.12.0"
+        "request" : "2.12.0",
+        "passport-pocket": "0.0.3",
+        "express" : "3.0.4",
+        "consolidate" : "0.5.0",
+        "swig" : "0.13.2"
     },
     "keywords": [
         "passport",

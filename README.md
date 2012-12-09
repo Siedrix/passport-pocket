@@ -11,7 +11,7 @@ unobtrusively integrated into any application or framework that supports
 
 ## Installation
 
-    $ Yet to come
+    $ npm install passport-pocket
 
 ## Usage
 
@@ -24,7 +24,7 @@ call `done` providing a user to complete authentication.
 
 In order to identify your application to Pocket, specify the consumer key and callback URL within `options`.  
 The consumer key and secret are obtained by [creating an application](http://getpocket.com/developer/apps/new) at
-Twitter's [developer](http://getpocket.com/developer/) site.
+Pockets's [developer](http://getpocket.com/developer/) site.
 
 	POCKET_CONSUMER_KEY = "Pocket consumer key";
 
@@ -46,11 +46,32 @@ Twitter's [developer](http://getpocket.com/developer/) site.
 
 #### Authenticate Requests
 
+Use `passport.authenticate()`, specifying the `'pocket'` strategy, to
+authenticate requests.
+
+For example, as route middleware in an [Express](http://expressjs.com/)
+application:
+
+	// Passport routes for express
+	server.get('/auth/pocket',passport.authenticate('pocket'),
+	function(req, res){
+	    // The request will be redirected to Pocket for authentication, so this
+	    // function will not be called.
+	});
+
+	server.get('/auth/pocket/callback', passport.authenticate('pocket', { failureRedirect: '/login' }),
+	function(req, res) {
+	    res.redirect('/');
+	});
+
+## Examples
+
+For a complete, working example check the server.js file[Moving it to a folder].
 
 
-## Credits
+## Thanks to
 
-  - [Daniel Zavala](http://github.com/siedrix)
+- [Jared Hanson](http://github.com/jaredhanson)
 
 ## License
 
