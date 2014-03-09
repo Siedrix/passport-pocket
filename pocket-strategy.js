@@ -3,7 +3,7 @@ var request = require('request'),
     util = require('util');
 
 function OAuth(options){
-    this.options = options; 
+    this.options = options;
     this.authUrl = "https://getpocket.com/auth/authorize?request_token={:requestToken}&redirect_uri={:redirectUri}"
 
     return this;
@@ -31,7 +31,7 @@ OAuth.prototype.getOAuthAccessToken = function (code, callback) {
     var oauth = this;
 
     request.post({
-        "headers" : {'content-type' : 'application/x-www-form-urlencoded'}, 
+        "headers" : {'content-type' : 'application/x-www-form-urlencoded'},
         "url"     : oauth.options.authorizationURL,
         "form"    : {
             "consumer_key" : oauth.options.consumerKey,
@@ -42,16 +42,16 @@ OAuth.prototype.getOAuthAccessToken = function (code, callback) {
         if(response.statusCode === 403) { return callback(403, null)}
 
         var data = oauth._formDataToJson(body);
-        
+
         callback(null, data.username, data.access_token);
-    });    
+    });
 }
 
 OAuth.prototype.getOAuthRequestToken = function (callback) {
     var oauth = this;
 
     request.post({
-        "headers" : {'content-type' : 'application/x-www-form-urlencoded'}, 
+        "headers" : {'content-type' : 'application/x-www-form-urlencoded'},
         "url"     : oauth.options.requestTokenURL,
         "form"    : {
             "consumer_key" : oauth.options.consumerKey,
@@ -62,7 +62,7 @@ OAuth.prototype.getOAuthRequestToken = function (callback) {
 
         var data = oauth._formDataToJson(body);
         var url  = oauth._formatAuthUrl(data.code, oauth.options.callbackURL);
-        
+
         callback(null, data.code, url);
     });
 }
@@ -104,11 +104,11 @@ Strategy.prototype.authenticate = function(req, options) {
                 if (err) { return self.error(err); }
                 if (!user) { return self.fail(info); }
                 self.success(user, info);
-            }        
+            }
 
             self._verity(username, accessToken, verified);
         });
-    }else{  
+    }else{
         console.log('implement get out tocken');
         this._oauth.getOAuthRequestToken(function (err, code, authUrl) {
             if(err) { self.error(err)}
@@ -117,13 +117,13 @@ Strategy.prototype.authenticate = function(req, options) {
 
             self.redirect(authUrl);
         });
-    } 
+    }
 }
 
 Strategy.prototype.getUnreadItems = function(accessToken, callback) {
     var strategy = this;
-    request.post({ 
-        "headers" : {'content-type' : 'application/x-www-form-urlencoded'},     
+    request.post({
+        "headers" : {'content-type' : 'application/x-www-form-urlencoded'},
         "url"     : strategy._options.retrive,
         "form"    : {
             "consumer_key" : strategy._options.consumerKey,
@@ -132,11 +132,30 @@ Strategy.prototype.getUnreadItems = function(accessToken, callback) {
         }
     }, function (error, response, body) {
         if(body){
-            var data = JSON.parse(body);            
+            var data = JSON.parse(body);
         }
 
         callback(error, data)
-    }); 
+    });
 };
+
+// http://getpocket.com/developer/docs/v3/modify
+Strategy.prototype.modify = function(actions, accessToken, callback) {
+    var strategy = this;
+
+    request({
+        method: 'POST',
+
+        // querystring is used because when using 'form',
+        // 'actions' are encoded incorrectly
+        url: 'https://getpocket.com/v3/send?actions=' + encodeURIComponent(JSON.stringify(actions)) + '&access_token=' + accessToken + '&consumer_key=' + strategy._options.consumerKey,
+    }, function (error, response, body) {
+        if (body) {
+            var data = JSON.parse(body);
+        }
+
+        callback(error, data)
+    });
+}
 
 module.exports = Strategy;
