@@ -96,20 +96,28 @@ Strategy.prototype.authenticate = function(req, options) {
     var self = this;
 
     if (req.session && req.session.pocketCode) {
-        console.log('implement oauth token to app token');
-        this._oauth.getOAuthAccessToken(req.session.pocketCode, function (err, username, accessToken) {
-            if(err || !username) { self.error(err); return}
+        function verified(err, user, info) {
+            if (err) { return self.error(err); }
+            if (!user) { return self.fail(info); }
+            req.session.pocketData.info = info;
 
-            function verified(err, user, info) {
-                if (err) { return self.error(err); }
-                if (!user) { return self.fail(info); }
-                self.success(user, info);
-            }
+            self.success(user, info);
+        }
 
-            self._verity(username, accessToken, verified);
-        });
+        if(req.session.pocketData){
+            self.pass(req.session.pocketData.username, req.session.pocketData.info);
+        }else{        
+            this._oauth.getOAuthAccessToken(req.session.pocketCode, function (err, username, accessToken) {
+                if(err || !username) { self.error(err); return}
+                req.session.pocketData = {
+                    username : username,
+                    accessToken : accessToken
+                }
+
+                self._verity(username, accessToken, verified);
+            });
+        }
     }else{
-        console.log('implement get out tocken');
         this._oauth.getOAuthRequestToken(function (err, code, authUrl) {
             if(err) { self.error(err)}
 

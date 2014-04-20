@@ -55,8 +55,8 @@ server.configure(function() {
 });
 
 swig.init({
-  	root  : './views',
-  	cache : false 
+	root  : './views',
+	cache : false
 });
 
 server.use(express.static('./public'));
@@ -66,6 +66,7 @@ server.set('view engine', 'html');
 server.set('views', './views');
 
 server.get('/', function(req, res){
+	console.log('Req to /');
 	if(req.user){
 		pocketStrategy.getUnreadItems(req.user.accessToken, function (err, items) {
 			if(err){
@@ -73,11 +74,11 @@ server.get('/', function(req, res){
 				return;
 			}
 
-			res.render('index', { 
+			res.render('index', {
 				user  : req.user,
 				items : items
 			});
-		})
+		});
 	}else{
 		res.render('index', { user: req.user });
 	}
@@ -86,13 +87,18 @@ server.get('/', function(req, res){
 // Passport routes for express
 server.get('/auth/pocket',passport.authenticate('pocket'),
 function(req, res){
-    // The request will be redirected to Twitter for authentication, so this
-    // function will not be called.
+    // If user is already log in and this url is called please readirect the user to the correct place.
+    res.redirect('/');
 });
 
 server.get('/auth/pocket/callback', passport.authenticate('pocket', { failureRedirect: '/login' }),
 function(req, res) {
     res.redirect('/');
+});
+
+server.get('/logout', function(req, res){
+	req.session.destroy();
+	res.redirect('/');
 });
 
 server.listen(3000);
