@@ -113,8 +113,11 @@ Strategy.prototype.authenticate = function(req, options) {
                     username : username,
                     accessToken : accessToken
                 }
-
-                self._verity(username, accessToken, verified);
+                if(self._options.passReqToCallback) {
+                  self._verity(req, username, accessToken, verified);
+                }else{
+                  self._verity(username, accessToken, verified);
+                }
             });
         }
     }else{
